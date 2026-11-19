@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm> // Required for sort, reverse, find, count, unique, min_element, max_element
+#include <algorithm> // Required for sort, reverse, find, count, unique, min_element, max_element, partial_sort, nth_element
 #include <numeric>   // Required for accumulate
 using namespace std;
 
@@ -31,7 +31,7 @@ int main() {
     v.reserve(10);
     cout << "Capacity after reserve(10): " << v.capacity() << "\n";
 
-    cout<< "Size of vector(number of elements present) " << v.size() <<endl;
+    cout << "Size of vector(number of elements present) " << v.size() << endl;
     // max_size(): Returns the theoretical maximum number of elements the vector can hold
     cout << "Max possible size: " << v.max_size() << "\n\n";
 
@@ -175,6 +175,40 @@ int main() {
     // accumulate() from <numeric>: Calculates the sum of all elements starting from initial value 0
     int totalSum = accumulate(nums.begin(), nums.end(), 0);
     cout << "Sum of all elements (accumulate): " << totalSum << "\n";
+
+    // 7. PARTIAL_SORT & NTH_ELEMENT (<algorithm>)
+    cout << "\n--- Partial Sort & Nth Element ---\n";
+    
+    // partial_sort(first, middle, last): Sorts ONLY the smallest k elements (from first to middle)
+    // in ascending order in O(N log K) time. The remaining elements are left in unspecified order.
+     // Time Complexity: since k=3, logk is constant, therefore it is O(n)
+    vector<int> psVec = {70, 20, 90, 10, 50, 30, 80};
+    partial_sort(psVec.begin(), psVec.begin() + 3, psVec.end());
+    printVector("partial_sort ascending (top 3 smallest)", psVec); // First 3 are {10, 20, 30}
+
+    // partial_sort with greater<int>(): Sorts ONLY the LARGEST k elements in descending order
+    vector<int> psDesc = {70, 20, 90, 10, 50, 30, 80};
+    partial_sort(psDesc.begin(), psDesc.begin() + 3, psDesc.end(), greater<int>());
+    printVector("partial_sort descending (top 3 largest)", psDesc); // First 3 are {90, 80, 70}
+
+    // IMPORTANT: Observe the second param while doing partial_sort and nth_element
+    // nth_element(first, nth, last): Rearranges elements in O(N) average time so that the element
+    // at index k is the exact one that would be there if fully sorted ascending.
+    // Elements before index k are <= it; elements after are >= it (neither side is sorted).
+    vector<int> nthVec = {70, 20, 90, 10, 50, 30, 80};
+    int k = 2; // 0-based index 2 (3rd smallest element)
+    nth_element(nthVec.begin(), nthVec.begin() + k, nthVec.end());
+    printVector("nth_element ascending (index 2 partitioned)", nthVec);
+    cout << "Element at index " << k << " (3rd smallest): " << nthVec[k] << "\n";
+
+    // nth_element with greater<int>(): Finds the (k + 1)-th LARGEST element at index k in O(N) time.
+    // Elements before index k are >= it; elements after are <= it.
+    vector<int> nthDesc = {70, 20, 90, 10, 50, 30, 80};
+    nth_element(nthDesc.begin(), nthDesc.begin() + k, nthDesc.end(), greater<int>());
+    printVector("nth_element descending (index 2 partitioned)", nthDesc);
+    cout << "Element at index " << k << " (3rd largest): " << nthDesc[k] << "\n";
+
+    return 0;
 
     return 0;
 }
